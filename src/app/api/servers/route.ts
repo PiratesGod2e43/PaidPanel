@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server'; import {requireRoles} from '@/lib/auth'; import {prisma} from '@/lib/prisma';
+export async function GET(){const s=await requireRoles(['CUSTOMER','MANAGER','ADMIN','CO_OWNER','OWNER']);if(!s)return NextResponse.json({error:'Unauthorized'},{status:401});const where=s.role==='CUSTOMER'?{userId:s.id}:{};const rows=await prisma.hostedServer.findMany({where,select:{id:true,name:true,status:true,createdAt:true,userId:true}});return NextResponse.json({servers:rows});}
